@@ -38,12 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework', 
+    'rest_framework.authtoken',
     'authentication',
     'opportunities',
     'recruiters',
     'messaging',
     'utils',
     'candidates',
+    'corsheaders',
 ]
 
 
@@ -55,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'back_end.urls'
@@ -129,3 +133,24 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+
+
+AUTH_USER_MODEL = 'authentication.User'
+
+
+#settings to configure Django's email sending functionality to use SMTP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com' 
+EMAIL_PORT = 587  
+EMAIL_HOST_USER = 'pulsed111@gmail.com' 
+EMAIL_HOST_PASSWORD = 'heny rqav xsoj fzkg'  
+EMAIL_USE_TLS = True
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    # Add other origins as needed
+]
