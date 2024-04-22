@@ -3,13 +3,24 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from authentication.models import Recruiter
-from authentication.serializers import RecruiterSerializer
+from authentication.serializers import RecruiterSerializer,User
 
 @api_view(['POST'])
 def create_recruiter(request):
     serializer = RecruiterSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        username = serializer.validated_data['username']
+        password = serializer.validated_data['password']
+        
+        # Check if user already exists
+        if User.objects.filter(username=username).exists():
+            return Response({'error': 'User with this username already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Creating a new user with encrypted password
+        user = User.objects.create_user(username=username)
+        user.set_password(password)
+        user.save()
+        
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -7,4 +7,6 @@ urlpatterns = [
     path('<int:post_id>/find', views.retrieve_post),  # URL for retrieving a post
     path('<int:post_id>/update/', views.update_post),  # URL for updating a post
     path('<int:post_id>/delete/', views.delete_post),  # URL for deleting a post
+    path('<int:post_id>/findCandidate/', views.findCandidate),  # URL for deleting a post
+
 ]

@@ -6,10 +6,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
-# class CandidateSerializer(UserSerializer):
-#     class Meta:
-#         model = Candidate
-#         fields = UserSerializer.Meta.fields + ('cv', 'cover_letter')
+
 from rest_framework import serializers
 from .models import Candidate, Event
 

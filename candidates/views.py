@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from authentication.models import Candidate
+from authentication.models import Candidate,User
 from authentication.serializers import CandidateSerializer
 from rest_framework import status
 
@@ -10,7 +10,18 @@ from rest_framework import status
 def create_candidate(request):
     serializer = CandidateSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        username = serializer.validated_data['username']
+        password = serializer.validated_data['password']
+        
+        # Check if user already exists
+        if User.objects.filter(username=username).exists():
+            return Response({'error': 'User with this username already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Creating a new user with encrypted password
+        user = User.objects.create_user(username=username)
+        user.set_password(password)
+        user.is_active=True
+        user.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
