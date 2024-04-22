@@ -24,6 +24,7 @@ urlpatterns = [
     path('posts/', include('posts.urls')),
     path('candidates/', include('candidates.urls')),
     path('recruiters/', include('recruiters.urls')),
+    path('ai/', include('utils.urls')),
 
 
     
