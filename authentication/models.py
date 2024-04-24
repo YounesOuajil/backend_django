@@ -32,6 +32,7 @@ class Candidate(User):
 
 
 class Recruiter(User):
+    company = models.CharField(max_length=100)
     def __str__(self):
         return f"{self.first_name} "
 
