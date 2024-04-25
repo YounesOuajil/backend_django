@@ -45,11 +45,12 @@ class Application(models.Model):
         ('a', 'Accepted'),
         ('r', 'Rejected'),
     ]
-
+    date=models.DateTimeField(auto_now=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE )
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='p')
     additional_documents = models.BinaryField(null=True, blank=True)
+    date=models.DateTimeField(auto_now_add=True)
 
 
 class CustomToken(models.Model):

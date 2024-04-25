@@ -2,10 +2,14 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from authentication.models import Recruiter,Candidate
+from authentication.models import Recruiter,Candidate,Application
 from authentication.serializers import RecruiterSerializer
 from posts.models import Post
 from posts.serializers import PostSerializer
+
+
+
+
 @api_view(['POST'])
 def create_recruiter(request):
     serializer = RecruiterSerializer(data=request.data)
@@ -54,20 +58,36 @@ def delete_recruiter(request, recruiter_id):
 
 
 
-@api_view(['GET'])
-def candidates_applys_ToRecruter(request, recruiter_id): 
-    pass
-    # try:
-    #     recruiter = Recruiter.objects.get(pk=recruiter_id)
-    #     posts = Post.objects.filter(recruiter=recruiter)
-    #     for post in posts:
-    #         candidates=Candidate.objects.
 
-    #     serializer = PostSerializer(posts, many=True)
-    #     return Response(serializer.data)
-    # except Recruiter.DoesNotExist:
-    #     return Response({'error': 'Recruiter not found'}, status=status.HTTP_404_NOT_FOUND)
-    # except Post.DoesNotExist:
-    #     return Response({'error': 'No posts found for this recruiter'}, status=status.HTTP_404_NOT_FOUND)
-    # base 3la id recruter anjib les post and for every post jib his candidate li daro apply
- 
+
+@api_view(['GET'])
+def candidates_applied_to_RHposts(request, recruiter_id): 
+    try:
+        # Retrieve the recruiter
+        recruiter = Recruiter.objects.get(pk=recruiter_id)
+        
+        # Filter posts associated with the recruiter
+        posts = Post.objects.filter(recruiter=recruiter)
+        
+        # Initialize an empty list to store candidate data
+        candidate_data = []
+        
+        # Iterate through each post and retrieve candidates who applied
+        for post in posts:
+            # Retrieve applications for the current post
+            applications = Application.objects.filter(post=post)
+            
+            # Iterate through each application and extract candidate data
+            for application in applications:
+                candidate_data.append({
+                    'candidate_id': application.candidate.id,
+                    'application_date': application.date,
+                    'post_id': application.post.id,
+                })
+        
+        return Response(candidate_data)
+        
+    except Recruiter.DoesNotExist:
+        return Response({'error': 'Recruiter not found'}, status=status.HTTP_404_NOT_FOUND)
+    except Post.DoesNotExist:
+        return Response({'error': 'No posts found for this recruiter'}, status=status.HTTP_404_NOT_FOUND)

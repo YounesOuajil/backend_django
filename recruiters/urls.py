@@ -7,6 +7,6 @@ urlpatterns = [
     path('<int:recruiter_id>/find/', views.retrieve_recruiter),
     path('<int:recruiter_id>/update/', views.update_recruiter),
     path('<int:recruiter_id>/delete/', views.delete_recruiter),
-    path('<int:recruiter_id>/candidates_applys_ToRecruter/', views.candidates_applys_ToRecruter),
+    path('<int:recruiter_id>/candidates_applied_to_RHposts/', views.candidates_applied_to_RHposts),
 
 ]
