@@ -12,8 +12,9 @@ from authentication.serializers import CandidateSerializer
 
 
 # Create a new post
+# @permission_classes([IsAuthenticated])  
+
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])  
 def create_post(request):
     serializer = PostSerializer(data=request.data)
     if serializer.is_valid():

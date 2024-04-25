@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Candidate,Event,Application,Recruiter
+from .models import User, Candidate,Event,Application,Recruiter,Post
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -25,7 +25,8 @@ class RecruiterSerializer(serializers.ModelSerializer):
 class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
-        fields = '__all__'
+        fields = ['candidate', 'post', 'status', 'additional_documents']
+
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
