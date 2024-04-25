@@ -50,7 +50,7 @@ class Application(models.Model):
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='p')
     additional_documents = models.BinaryField(null=True, blank=True)
-#datae
+
 
 class CustomToken(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

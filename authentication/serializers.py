@@ -23,6 +23,8 @@ class RecruiterSerializer(serializers.ModelSerializer):
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
+    candidate = serializers.PrimaryKeyRelatedField(queryset=Candidate.objects.all())
+
     class Meta:
         model = Application
         fields = ['candidate', 'post', 'status', 'additional_documents']
