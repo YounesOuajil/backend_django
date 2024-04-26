@@ -59,6 +59,11 @@ def delete_recruiter(request, recruiter_id):
 
 
 
+from datetime import datetime, timedelta
+from django.utils import timezone
+from django.db.models import Count, DateTimeField
+from django.db.models.functions import TruncMonth
+from rest_framework.response import Response
 
 @api_view(['GET'])
 def candidates_applied_to_RHposts(request, recruiter_id): 
@@ -66,28 +71,43 @@ def candidates_applied_to_RHposts(request, recruiter_id):
         # Retrieve the recruiter
         recruiter = Recruiter.objects.get(pk=recruiter_id)
         
+        # Calculate the datetime 6 months ago
+        six_months_ago = timezone.now() - timedelta(days=30 * 6)
+        
         # Filter posts associated with the recruiter
         posts = Post.objects.filter(recruiter=recruiter)
         
-        # Initialize an empty list to store candidate data
-        candidate_data = []
+        # Aggregate the number of candidates who applied each month for each post over the last 6 months
+        applications_data = (
+            Application.objects
+            .filter(post__in=posts, date__gte=six_months_ago)
+            .annotate(month=TruncMonth('date', output_field=DateTimeField()))
+            .values('month', 'post')
+            .annotate(total_candidates=Count('candidate'))
+            .order_by('month', 'post')
+        )
         
-        # Iterate through each post and retrieve candidates who applied
-        for post in posts:
-            # Retrieve applications for the current post
-            applications = Application.objects.filter(post=post)
+        # Format the data for each month
+        response_data = {}
+        for data in applications_data:
+            month_str = data['month'].strftime('%Y-%m')
+            post_id = data['post']
+            total_candidates = data['total_candidates']
             
-            # Iterate through each application and extract candidate data
-            for application in applications:
-                candidate_data.append({
-                    'candidate_id': application.candidate.id,
-                    'application_date': application.date,
-                    'post_id': application.post.id,
-                })
+            if month_str not in response_data:
+                response_data[month_str] = {}
+            
+            response_data[month_str][post_id] = {
+                'total_candidates': total_candidates,
+            }
         
-        return Response(candidate_data)
+        return Response(response_data)
         
     except Recruiter.DoesNotExist:
         return Response({'error': 'Recruiter not found'}, status=status.HTTP_404_NOT_FOUND)
     except Post.DoesNotExist:
         return Response({'error': 'No posts found for this recruiter'}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+
