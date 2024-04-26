@@ -9,9 +9,14 @@ class User(AbstractUser):
         ('r','recruiter'),
         ('a','admin'),
     ]
+    GENDER_CHOICES=[
+        ('f','female'),
+        ('m','male'),
+    ]
     is_active=models.BooleanField(default=False)
     email= models.EmailField(unique=True)
     role= models.CharField(max_length=1, choices= MEMBERSHIP_CHOICES, default='c')
+    gender=models.CharField(max_length=1, choices= GENDER_CHOICES)
     
 
 
